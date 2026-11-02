@@ -1,0 +1,180 @@
+
+databaseChangeLog:
+  - changeSet:
+      id: 001-create-addresses
+      author: developer
+      changes:
+        - createTable:
+            tableName: addresses
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: house_number
+                  type: INT
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: street
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: city
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: country
+                  type: VARCHAR(100)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: post_code
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 002-create-contacts
+      author: developer
+      changes:
+        - createTable:
+            tableName: contacts
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: phone
+                  type: VARCHAR(30)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: 003-create-arrival-times
+      author: developer
+      changes:
+        - createTable:
+            tableName: arrival_times
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: check_in
+                  type: TIME
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: check_out
+                  type: TIME
+                  defaultValue: "12:00:00"
+                  constraints:
+                    nullable: false
+
+  - changeSet:
+      id: 004-create-hotels
+      author: developer
+      changes:
+        - createTable:
+            tableName: hotels
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+              - column:
+                  name: description
+                  type: VARCHAR(10000)
+
+              - column:
+                  name: brand
+                  type: VARCHAR(255)
+
+              - column:
+                  name: address_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+                    foreignKeyName: fk_hotels_address
+                    references: addresses(id)
+
+              - column:
+                  name: contacts_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    unique: true
+                    foreignKeyName: fk_hotels_contacts
+                    references: contacts(id)
+
+              - column:
+                  name: arrival_time_id
+                  type: BIGINT
+                  constraints:
+                    unique: true
+                    foreignKeyName: fk_hotels_arrival_time
+                    references: arrival_times(id)
+
+  - changeSet:
+      id: 005-create-hotel-amenities
+      author: developer
+      changes:
+        - createTable:
+            tableName: hotel_amenities
+            columns:
+              - column:
+                  name: hotel_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_amenities_hotel
+                    references: hotels(id)
+
+              - column:
+                  name: amenity
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+
+        - addPrimaryKey:
+            tableName: hotel_amenities
+            columnNames: hotel_id, amenity
+            constraintName: pk_hotel_amenities
