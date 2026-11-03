@@ -7,9 +7,13 @@ import jakarta.persistence.criteria.Join;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 public final class HotelQueryBuilder {
 
@@ -32,7 +36,7 @@ public final class HotelQueryBuilder {
             predicates.add(
                     cb.like(
                             cb.lower(root.get("name")),
-                            "%" + name.toLowerCase() + "%"
+                            "%" + name.toLowerCase(Locale.ROOT) + "%"
                     )
             );
         }
@@ -41,7 +45,7 @@ public final class HotelQueryBuilder {
             predicates.add(
                     cb.like(
                             cb.lower(root.get("brand")),
-                            "%" + brand.toLowerCase() + "%"
+                            "%" + brand.toLowerCase(Locale.ROOT) + "%"
                     )
             );
         }
@@ -50,7 +54,7 @@ public final class HotelQueryBuilder {
             predicates.add(
                     cb.like(
                             cb.lower(root.get("address").get("city")),
-                            "%" + city.toLowerCase() + "%"
+                            "%" + city.toLowerCase(Locale.ROOT) + "%"
                     )
             );
         }
@@ -59,20 +63,36 @@ public final class HotelQueryBuilder {
             predicates.add(
                     cb.like(
                             cb.lower(root.get("address").get("country")),
-                            "%" + country.toLowerCase() + "%"
+                            "%" + country.toLowerCase(Locale.ROOT) + "%"
                     )
             );
         }
 
         if (amenities != null && !amenities.isEmpty()) {
+            Set<String> requestedAmenities = new HashSet<>(amenities);
+
+            Subquery<Long> amenitiesSubquery = query.subquery(Long.class);
+            Root<Hotel> amenitiesRoot = amenitiesSubquery.from(Hotel.class);
+
             Join<Hotel, String> amenitiesJoin =
-                    root.join("amenities", JoinType.INNER);
+                    amenitiesRoot.join("amenities", JoinType.INNER);
+
+            amenitiesSubquery
+                    .select(cb.countDistinct(amenitiesJoin))
+                    .where(
+                            cb.equal(
+                                    amenitiesRoot.get("id"),
+                                    root.get("id")
+                            ),
+                            amenitiesJoin.in(requestedAmenities)
+                    );
 
             predicates.add(
-                    amenitiesJoin.in(amenities)
+                    cb.equal(
+                            amenitiesSubquery,
+                            (long) requestedAmenities.size()
+                    )
             );
-
-            query.distinct(true);
         }
 
         return predicates;

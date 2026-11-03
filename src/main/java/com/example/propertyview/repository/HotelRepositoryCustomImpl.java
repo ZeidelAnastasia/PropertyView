@@ -12,6 +12,7 @@ import jakarta.persistence.criteria.Expression;
 import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
+import jakarta.persistence.criteria.Predicate;
 
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class HotelRepositoryCustomImpl implements HotelRepositoryCustom {
                 HotelQueryBuilder.buildHotelFilterPredicates(
                         cb, root, query,
                         name, brand, city, country, amenities
-                ).toArray(new jakarta.persistence.criteria.Predicate[0])
+                ).toArray(new Predicate[0])
         );
 
         return entityManager.createQuery(query).getResultList();
