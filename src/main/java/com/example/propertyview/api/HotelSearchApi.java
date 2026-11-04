@@ -2,6 +2,7 @@ package com.example.propertyview.api;
 
 import com.example.propertyview.dto.response.HotelSummaryResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,10 +34,19 @@ public interface HotelSearchApi {
             )
     })
     List<HotelSummaryResponse> searchHotels(
+            @Parameter(description = "Hotel name (partial match)")
             String name,
+
+            @Parameter(description = "Hotel brand (partial match)")
             String brand,
+
+            @Parameter(description = "City name (partial match)")
             String city,
+
+            @Parameter(description = "Country name (partial match)")
             String country,
+
+            @Parameter(description = "List of amenities; hotel must contain all specified amenities")
             List<String> amenities
     );
 }
