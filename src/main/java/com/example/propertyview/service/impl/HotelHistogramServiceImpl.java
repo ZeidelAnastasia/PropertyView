@@ -21,10 +21,12 @@ public class HotelHistogramServiceImpl implements HotelHistogramService {
     @Override
     public List<HotelCountProjection> getHistogram(String param) {
         if (param == null || param.isBlank()) {
-            throw new BadRequestException("Histogram parameter must not be empty");
+            throw new BadRequestException("Histogram parameter must not be blank");
         }
 
-        return switch (param.toLowerCase(Locale.ROOT)) {
+        String normalizedParam = param.trim().toLowerCase(Locale.ROOT);
+
+        return switch (normalizedParam) {
             case "brand" -> hotelRepository.countHotelsByBrand();
             case "city" -> hotelRepository.countHotelsByCity();
             case "country" -> hotelRepository.countHotelsByCountry();
