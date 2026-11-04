@@ -18,7 +18,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/hotels")
 @RequiredArgsConstructor
-@Validated
 public class HotelController implements HotelApi {
 
     private final HotelService hotelService;
@@ -42,20 +41,14 @@ public class HotelController implements HotelApi {
     @Override
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public HotelDetailsResponse createHotel(
-            @Valid @RequestBody CreateHotelRequest request
-    ) {
+    public HotelDetailsResponse createHotel(CreateHotelRequest request) {
         return hotelService.createHotel(request);
     }
 
     @Override
     @PostMapping("/{id}/amenities")
     @ResponseStatus(HttpStatus.OK)
-    public HotelDetailsResponse addAmenities(
-            @PathVariable Long id,
-            @Valid @NotEmpty(message = "Amenities list must not be empty")
-            @RequestBody List<@NotBlank(message = "Amenity must not be blank") String> amenities
-    ) {
+    public HotelDetailsResponse addAmenities(Long id, List<String> amenities) {
         return hotelService.addAmenities(id, amenities);
     }
 }

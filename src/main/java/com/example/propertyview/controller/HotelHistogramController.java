@@ -19,9 +19,7 @@ public class HotelHistogramController implements HotelHistogramApi {
     @Override
     @GetMapping("/{param}")
     @ResponseStatus(HttpStatus.OK)
-    public List<HotelCountProjection> getHistogram(
-            @PathVariable String param
-    ) {
+    public List<HotelCountProjection> getHistogram(String param) {
         return hotelHistogramService.getHistogram(param);
     }
 }

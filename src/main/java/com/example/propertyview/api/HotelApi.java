@@ -7,6 +7,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -56,7 +61,7 @@ public interface HotelApi {
                     description = "Invalid request data"
             )
     })
-    HotelDetailsResponse createHotel(CreateHotelRequest request);
+    HotelDetailsResponse createHotel(@Valid @RequestBody CreateHotelRequest request);
 
     @Operation(
             summary = "Add amenities to a hotel",
@@ -76,5 +81,10 @@ public interface HotelApi {
                     description = "Hotel not found"
             )
     })
-    HotelDetailsResponse addAmenities(Long id, List<String> amenities);
+    HotelDetailsResponse addAmenities(
+            @PathVariable Long id,
+            @NotEmpty(message = "Amenities list must not be empty")
+            @RequestBody
+            List<@NotBlank(message = "Amenity must not be blank") String> amenities
+    );
 }

@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.HandlerMethodValidationException;
 
 import java.net.URI;
 import java.util.Map;
@@ -97,6 +98,19 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(HandlerMethodValidationException.class)
+    public ProblemDetail handleHandlerMethodValidationException(
+            HandlerMethodValidationException ex,
+            HttpServletRequest request
+    ) {
+        return createProblemDetail(
+                HttpStatus.BAD_REQUEST,
+                "Bad Request",
+                "Validation failed for method arguments",
+                request
+        );
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail handleDataIntegrityViolation(
             DataIntegrityViolationException exception,
@@ -110,7 +124,7 @@ public class GlobalExceptionHandler {
         );
     }
 
-    @ExceptionHandler(Exception.class)
+   @ExceptionHandler(Exception.class)
     public ProblemDetail handleUnexpectedException(
             Exception exception,
             HttpServletRequest request

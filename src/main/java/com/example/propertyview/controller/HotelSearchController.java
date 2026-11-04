@@ -20,11 +20,11 @@ public class HotelSearchController implements HotelSearchApi {
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
     public List<HotelSummaryResponse> searchHotels(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String brand,
-            @RequestParam(required = false) String city,
-            @RequestParam(required = false) String country,
-            @RequestParam(required = false) List<String> amenities
+            String name,
+            String brand,
+            String city,
+            String country,
+            List<String> amenities
     ) {
         return hotelSearchService.searchHotels(
                 name,
